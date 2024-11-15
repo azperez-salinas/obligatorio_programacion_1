@@ -8,3 +8,7 @@ class Mago(Aventurero):
         self.__puntos_habilidad = puntos_habilidad
         self.__dinero = dinero
         self.__mana = mana
+    
+    def __eq__(self, other):
+        if isinstance(self, Mago):
+            return self.id == other.id

@@ -16,3 +16,7 @@ class Ranger(Aventurero):
     @mascota.setter
     def mascota(self):
         return self.__mascota    
+    
+    def __eq__(self, other):
+        if isinstance(self, Ranger):
+            return self.id == other.id

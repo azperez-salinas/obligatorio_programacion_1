@@ -1,0 +1,1 @@
+from .clean_console import clear
