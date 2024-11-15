@@ -19,3 +19,11 @@ class Mision(ABC):
     @property
     def completado(self):
         return self.__completado
+    
+    @completado.setter
+    def completado(self, comp):
+        self.__completado = comp
+    
+    def __eq__(self, other):
+        if isinstance(self, Mision):
+            return self.__nombre == other.nombre
