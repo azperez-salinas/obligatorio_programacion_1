@@ -1,4 +1,4 @@
-from aventurero import Aventurero
+from .aventurero import Aventurero
 
 class Mago(Aventurero):
     def __init__(self, nombre:str, id:int, puntos_habilidad:int, dinero:float, mana:int):
@@ -8,6 +8,10 @@ class Mago(Aventurero):
         self.__puntos_habilidad = puntos_habilidad
         self.__dinero = dinero
         self.__mana = mana
+    
+    @property
+    def mana(self):
+        return self.__mana
     
     def __eq__(self, other):
         if isinstance(self, Mago):

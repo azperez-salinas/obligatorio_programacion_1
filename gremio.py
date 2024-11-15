@@ -1,15 +1,15 @@
-from .entities.aventurero           import Aventurero
-from .entities.guerrero             import Guerrero
-from .entities.mago                 import Mago
-from .entities.ranger               import Ranger
-from .entities.mascota              import Mascota
-from .entities.mision               import Mision
-from .entities.grupal               import Grupal
-from .entities.individual           import Individual
-from .exceptions.datosInvalidos     import DatosInvalidos 
-from .exceptions.entidadYaExiste    import EntidadYaExiste 
-from .exceptions.entidadNoExiste    import EntidadNoExiste
-from .exceptions.misionYaCompletada import MisionYaCompletada
+from entities.aventurero           import Aventurero
+from entities.guerrero             import Guerrero
+from entities.mago                 import Mago
+from entities.ranger               import Ranger
+from entities.mascota              import Mascota
+from entities.mision               import Mision
+from entities.grupal               import Grupal
+from entities.individual           import Individual
+from exceptions.datosInvalidos     import DatosInvalidos 
+from exceptions.entidadYaExiste    import EntidadYaExiste 
+from exceptions.entidadNoExiste    import EntidadNoExiste
+from exceptions.misionYaCompletada import MisionYaCompletada
 
 class Gremio():
     def __init__(self):
@@ -26,24 +26,26 @@ class Gremio():
         clase = clase.lower()
         match clase:
             case 'mago':
-                mana = input('Ingrese por favor su mana (1-1000): ')
+                mana = int(input('Ingrese por favor su mana (1-1000): '))
                 if mana < 1 or mana > 1000:
                     raise DatosInvalidos('[ERROR]: Los datos ingresados son inválidos.')
 
                 nuevo_aventurero = Mago(nombre, id, puntos_habilidad, dinero, mana)   
             case 'guerrero':
-                fuerza = input('Ingrese por favor su fuerza (1-100): ')
+                fuerza = int(input('Ingrese por favor su fuerza (1-100): '))
                 if fuerza < 1 or fuerza > 100:
                     raise DatosInvalidos('[ERROR]: Los datos ingresados son inválidos.')
 
                 nuevo_aventurero = Guerrero(nombre, id, puntos_habilidad, dinero, fuerza)
                 
             case 'ranger':
-                mascota_bool = input('¿Quieres tener mascota?')
-                nuevo_aventurero = Ranger(nombre, id, puntos_habilidad, dinero, fuerza)
+                mascota_bool = input('¿Quieres tener mascota? (S/N) ').upper()
+                mascota_bool = True if mascota_bool == 'S' else False
+                
+                nuevo_aventurero = Ranger(nombre, id, puntos_habilidad, dinero)
                 if mascota_bool:
                     nombre_mascota = input('Ingrese por favor el nombre de la mascota: ')
-                    puntos_habilidad_mascota = input(f'Ingrese los puntos de habilidad de {nombre_mascota}: ')
+                    puntos_habilidad_mascota = int(input(f'Ingrese los puntos de habilidad de {nombre_mascota}: '))
                     if not (puntos_habilidad_mascota or nombre_mascota):
                         raise DatosInvalidos('[ERROR]: Los datos ingresados son inválidos.')
                     if puntos_habilidad_mascota < 1 or puntos_habilidad_mascota > 50:
@@ -58,7 +60,7 @@ class Gremio():
                 raise EntidadYaExiste('[ERROR]: La entidad Aventurero ya existe.')
         
         self.aventureros_registrados.append(nuevo_aventurero)
-        if clase == 'ranger':
+        if clase == 'ranger' and mascota_bool:
             nuevo_aventurero.mascota = mascota
 
         #MENSAJE DE OK/NOK DE LA CREACION
@@ -79,7 +81,7 @@ class Gremio():
                 nueva_mision = Individual(nombre, rango, recompensa, completado)
             
             case 'grupal':
-                cantidad_minima = input('Ingrese, por favor, la cantidad minima de jugadores para realizar la mision: ')
+                cantidad_minima = int(input('Ingrese, por favor, la cantidad minima de jugadores para realizar la mision: '))
                 nueva_mision = Grupal(nombre, rango, recompensa, completado, cantidad_minima)
                 
             case _:
@@ -131,7 +133,7 @@ class Gremio():
             raise EntidadNoExiste('[ERROR] Alguno/s de los identificadores ingresados no existe.')
         
         if isinstance(mision, Grupal):
-            if len(aventureros) < mision.cantidad_minima:
+            if len(aventureros) < mision.cantidad_minima_miembros:
                 raise Exception('[ERROR] Cantidad insuficiente de aventureros para realizar la mision.')
         
         habilidad_total_aventureros = []
@@ -140,7 +142,7 @@ class Gremio():
         for aventurero in aventureros:
             if isinstance(aventurero, Ranger):
                 habilidad_aventurero = aventurero.puntos_habilidad
-                if aventurero.rango <= 80 and aventurero.mascota:
+                if aventurero.puntos_habilidad <= 80 and aventurero.mascota:
                     habilidad_aventurero += aventurero.mascota.puntos_habilidad
 
             if isinstance(aventurero, Mago):
@@ -167,12 +169,16 @@ class Gremio():
                     rango_aventurero = 5
             rangos_aventureros_total.append(rango_aventurero)
         
-        
         for rango in rangos_aventureros_total:
             if rango < mision.rango:
                 raise Exception('[ERROR]: Rango insuficiente.')
             
         mision.completado = True
+        if mision not in self.misiones_creadas or mision.completado != True:
+                raise Exception('Hubo un error, no se ha realizado la mision')
+        
+        print('Mision realizada exitosamente!')
+        
         recompensa_total = mision.recompensa / len(aventureros)
         
         for aventurero in aventureros:

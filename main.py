@@ -1,9 +1,9 @@
 from gremio                         import Gremio
-from .utils.clean_console           import clear
-from .exceptions.datosInvalidos     import DatosInvalidos 
-from .exceptions.entidadYaExiste    import EntidadYaExiste 
-from .exceptions.entidadNoExiste    import EntidadNoExiste
-from .exceptions.misionYaCompletada import MisionYaCompletada
+from utils.clean_console           import clear
+from exceptions.datosInvalidos     import DatosInvalidos 
+from exceptions.entidadYaExiste    import EntidadYaExiste 
+from exceptions.entidadNoExiste    import EntidadNoExiste
+from exceptions.misionYaCompletada import MisionYaCompletada
 
 gremio_1 = Gremio()
 
@@ -45,6 +45,7 @@ def menu_principal():
     exit = False
 
     while exit == False:
+        print()
         print("Bienvenido al Simulador de Gremio de Aventureros")
         print("Seleccione una opción:")
         print("   1. Registrar Aventurero")
@@ -60,9 +61,9 @@ def menu_principal():
                 try:
                     clear()
                     nombre = input('Por favor, ingrese el nombre: ')
-                    id = input('Ingrese el id: ')
-                    puntos_habilidad = input('Ingrese los puntos de habilidad: ')
-                    dinero = input('Ingrese el dinero: ')
+                    id = int(input('Ingrese el id: '))
+                    puntos_habilidad = int(input('Ingrese los puntos de habilidad: '))
+                    dinero = float(input('Ingrese el dinero: '))
                     clase = input('Ingrese la clase de aventurero que quiere crear (mago, guerrero, ranger): ')
                     gremio_1.registrar_aventurero(nombre, id, puntos_habilidad, dinero, clase)
                 except DatosInvalidos as e:
@@ -73,9 +74,10 @@ def menu_principal():
                     print(e)
             case 2:
                 try: 
+                    clear()
                     nombre = input('Por favor, ingrese el nombre: ')
-                    rango = input('Ingrese el rango: ')
-                    recompensa = input('Ingrese la recompensa (con decimales): ')
+                    rango = int(input('Ingrese el rango: '))
+                    recompensa = float(input('Ingrese la recompensa (con decimales): '))
                     completado = False
                     tipo = input('Ingrese el tipo de mision que quiere crear (individual, grupal): ')
                     gremio_1.registrar_mision(nombre, rango, recompensa, completado, tipo)
@@ -88,10 +90,11 @@ def menu_principal():
                     
             case 3:
                 try:
+                    clear()
                     lista_ids = []
                     auxiliar_cant_ids = 'S'
                     while auxiliar_cant_ids == 'S':
-                        id = input('Ingrese el id del aventurero: ')
+                        id = int(input('Ingrese el id del aventurero: '))
                         lista_ids.append(id)
                         auxiliar_cant_ids = input('Desea ingresar otro aventuero? (S/N)').upper()
                     nombre_mision = input('Ingrese el nombre de la mision que desea realizar: ')
@@ -105,10 +108,18 @@ def menu_principal():
                 except Exception as e:
                     print(e)
             case 4:
+                clear()
                 otras_consultas()
             case 5:
+                clear()
                 print("Hasta pronto!")
                 exit = True
             case _:
                 print("El número seleccionado no esta dentro de las opciones del menú.\nVuelva a intentarlo")
 
+
+if __name__ == "__main__":
+    try:
+        menu_principal()
+    except Exception as e:
+        print(e)

@@ -1,4 +1,4 @@
-from mision import Mision
+from .mision import Mision
 
 class Individual(Mision):
     def __init__(self, nombre:str, rango:int, recompensa:float, completado:bool):

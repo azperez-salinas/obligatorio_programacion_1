@@ -1,4 +1,4 @@
-from aventurero import Aventurero
+from .aventurero import Aventurero
 
 class Guerrero(Aventurero):
     def __init__(self, nombre:str, id:int, puntos_habilidad:int, dinero:float, fuerza:int):
@@ -9,3 +9,10 @@ class Guerrero(Aventurero):
         self.__dinero = dinero
         self.__fuerza = fuerza
     
+    @property
+    def fuerza(self):
+        return self.__fuerza
+    
+    def __eq__(self, other):
+        if isinstance(self, Guerrero):
+            return self.id == other.id
